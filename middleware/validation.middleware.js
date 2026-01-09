@@ -1,15 +1,7 @@
 /**
- * OLOPA Validation Middleware
- * Validates requests against Joi schemas
+ * Validation Middleware
  */
 
-const { logger } = require('../utils/logger');
-
-/**
- * Creates validation middleware for a given Joi schema
- * @param {Object} schema - Joi validation schema
- * @returns {Function} Express middleware function
- */
 const validateRequest = (schema) => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.body, {
@@ -23,7 +15,7 @@ const validateRequest = (schema) => {
         message: detail.message
       }));
 
-      logger.warn('Validation error', { errors, body: req.body });
+      console.warn('Validation error:', errors);
 
       return res.status(400).json({
         success: false,
@@ -33,7 +25,6 @@ const validateRequest = (schema) => {
       });
     }
 
-    // Replace req.body with validated and sanitized data
     req.body = value;
     next();
   };
